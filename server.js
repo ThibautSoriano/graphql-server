@@ -28,7 +28,7 @@ server.use('/graphiql', graphiqlExpress({
 }));
 
 var distDir = __dirname + "/build/";
-app.use(express.static(distDir));
+server.use(express.static(distDir));
 
 // We wrap the express server so that we can attach the WebSocket for subscriptions
 const ws = createServer(server);
