@@ -16,7 +16,7 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 const PORT = 4000;
 const server = express();
 
-server.use('*', cors({ origin: 'https://thibaut-client.herokuapp.com:3000' }));
+server.use('*', cors({ origin: 'https://thibaut-client.herokuapp.com' }));
 
 server.use('/graphql', bodyParser.json(), graphqlExpress({
   schema
