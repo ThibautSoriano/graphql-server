@@ -24,7 +24,7 @@ server.use('/graphql', bodyParser.json(), graphqlExpress({
 
 server.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
-  subscriptionsEndpoint: `ws://localhost:4000/subscriptions`
+  subscriptionsEndpoint: `https://thibaut-server.herokuapp.com:4000/subscriptions`
 }));
 
 // We wrap the express server so that we can attach the WebSocket for subscriptions
