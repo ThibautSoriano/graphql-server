@@ -16,7 +16,7 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 const PORT = 4000;
 const server = express();
 
-server.use('*', cors({ origin: 'https://thibaut-client.herokuapp.com' }));
+server.use('*', cors({ origin: 'http://localhost:3000' }));
 
 server.use('/graphql', bodyParser.json(), graphqlExpress({
   schema
@@ -24,8 +24,11 @@ server.use('/graphql', bodyParser.json(), graphqlExpress({
 
 server.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
-  subscriptionsEndpoint: `https://thibaut-server.herokuapp.com:4000/subscriptions`
+  subscriptionsEndpoint: `ws://localhost:4000/subscriptions`
 }));
+
+var distDir = __dirname + "/static/";
+app.use(express.static(distDir));
 
 // We wrap the express server so that we can attach the WebSocket for subscriptions
 const ws = createServer(server);
