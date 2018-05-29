@@ -27,7 +27,7 @@ server.use('/graphiql', graphiqlExpress({
   subscriptionsEndpoint: `ws://localhost:4000/subscriptions`
 }));
 
-var distDir = __dirname + "/static/";
+var distDir = __dirname + "/build/";
 app.use(express.static(distDir));
 
 // We wrap the express server so that we can attach the WebSocket for subscriptions
