@@ -13,7 +13,7 @@ import { execute, subscribe } from 'graphql';
 import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT;
 const server = express();
 const path = require("path");
 
