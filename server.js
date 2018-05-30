@@ -26,7 +26,7 @@ server.use('/graphql', bodyParser.json(), graphqlExpress({
 
 server.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
-  subscriptionsEndpoint: `ws://localhost/subscriptions`
+  subscriptionsEndpoint: `wss://localhost/subscriptions`
 }));
 
 // var distDir = __dirname + "/build/";
