@@ -15,6 +15,7 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 
 const PORT = process.env.PORT || 4000;
 const server = express();
+const path = require("path");
 
 server.use('*', cors({ origin: 'http://localhost:3000' }));
 
@@ -29,6 +30,10 @@ server.use('/graphiql', graphiqlExpress({
 
 var distDir = __dirname + "/build/";
 server.use(express.static(distDir));
+
+server.get('*', function (request, response){
+  response.sendFile(path.resolve(__dirname, 'build', 'index.html'))
+})
 
 // We wrap the express server so that we can attach the WebSocket for subscriptions
 const ws = createServer(server);
