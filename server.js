@@ -17,7 +17,8 @@ const PORT = process.env.PORT;
 const server = express();
 // const path = require("path");
 
-server.use('*', cors({ origin: 'https://thibaut-client.herokuapp.com/' }));
+// server.use('*', cors({ origin: 'https://thibaut-client.herokuapp.com/' }));
+server.use(cors());
 
 server.use('/graphql', bodyParser.json(), graphqlExpress({
   schema
