@@ -13,7 +13,7 @@ import { execute, subscribe } from 'graphql';
 import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 const server = express();
 
 server.use('*', cors({ origin: 'http://localhost:3000' }));
