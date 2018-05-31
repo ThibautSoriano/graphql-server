@@ -54,6 +54,10 @@ export const resolvers = {
 
       return newMessage;
     },
+    addTwitt: (root, args) => {
+      console.log("call with ", args.message);
+      return "success";
+    },
   },
   Subscription: {
     messageAdded: {

@@ -13,9 +13,8 @@ import { execute, subscribe } from 'graphql';
 import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 
-const PORT = process.env.PORT;
+const PORT = 4000;
 const server = express();
-// const path = require("path");
 
 // server.use('*', cors({ origin: 'https://thibaut-client.herokuapp.com/' }));
 server.use(cors());
@@ -24,17 +23,11 @@ server.use('/graphql', bodyParser.json(), graphqlExpress({
   schema
 }));
 
+// deploy to heroku : put wss instead of ws
 server.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
-  subscriptionsEndpoint: `wss://localhost/subscriptions`
+  subscriptionsEndpoint: `ws://localhost:4000/subscriptions`
 }));
-
-// var distDir = __dirname + "/build/";
-// server.use(express.static(distDir));
-
-// server.get('*', function (request, response){
-//   response.sendFile(path.resolve(__dirname, 'build', 'index.html'))
-// })
 
 // We wrap the express server so that we can attach the WebSocket for subscriptions
 const ws = createServer(server);

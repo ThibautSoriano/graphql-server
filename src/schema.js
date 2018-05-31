@@ -32,6 +32,7 @@ type Query {
 type Mutation {
   addChannel(name: String!): Channel
   addMessage(message: MessageInput!): Message
+  addTwitt(message: String!): String
 }
 
 # The subscription root type, specifying what we can subscribe to
