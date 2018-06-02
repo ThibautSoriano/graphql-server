@@ -23,7 +23,7 @@ type Message {
 }
 
 type Twitt {
-  id: ID!
+  _id: String!
   title: String
   text: String
   votesCount: Int
@@ -41,7 +41,7 @@ type Mutation {
   addChannel(name: String!): Channel
   addMessage(message: MessageInput!): Message
   addTwitt(title: String!, text: String!): String
-  voteForTwitt(id: ID!): String
+  voteForTwitt(id: String!): String
 }
 
 # The subscription root type, specifying what we can subscribe to

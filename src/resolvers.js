@@ -1,5 +1,6 @@
 import { PubSub } from 'graphql-subscriptions';
 import { withFilter } from 'graphql-subscriptions';
+import {MongoClient, ObjectId} from 'mongodb'
 
 const channels = [{
   id: '1',
@@ -26,9 +27,27 @@ let nextId = 3;
 let nextMessageId = 5;
 
 const pubsub = new PubSub();
-const twitts = [{id: 0, title: "titre exemple", text:"contenu du twitt", votesCount: 2},
-{id: 1, title: "lentilles", text:"se vendent à l'unité", votesCount: 1}];
-let nextIdForTwitts = 2;
+// const twitts = [{id: 0, title: "titre exemple", text:"contenu du twitt", votesCount: 2},
+// {id: 1, title: "lentilles", text:"se vendent à l'unité", votesCount: 1}];
+let nextIdForTwitts = 0;
+
+const prepare = (o) => {
+  o._id = o._id.toString()
+  return o
+};
+
+let Twitts;
+
+export const loadDb = async () => {
+  try {
+    const MONGO_URL = 'mongodb://administrator:administrator1@ds159509.mlab.com:59509/retro-twitts';
+    const db = await MongoClient.connect(MONGO_URL);
+    Twitts = db.collection('twitts');
+
+  } catch (e) {
+    console.log(e)
+  }
+};
 
 export const resolvers = {
   Query: {
@@ -38,9 +57,13 @@ export const resolvers = {
     channel: (root, { id }) => {
       return channels.find(channel => channel.id === id);
     },
-    twitts: () => {
+    twitts: async () => {
       console.log("query get list");
-      return twitts;
+    //   const MONGO_URL = 'mongodb://administrator:administrator1@ds159509.mlab.com:59509/retro-twitts';
+    // const db = await MongoClient.connect(MONGO_URL);
+    // const Twitts = db.collection('twitts');
+      return (await Twitts.find({}).toArray()).map(prepare);
+      // return twitts;
     },
   },
   Mutation: {
@@ -61,24 +84,40 @@ export const resolvers = {
 
       return newMessage;
     },
-    addTwitt: (root, args) => {
+    addTwitt: async (root, args) => {
+      // console.log("new id ", newId.id);
+      const newTwitt = { title: args.title, text: args.text, votesCount: 0 };
+        const res = await Twitts.insert(newTwitt);
+        // return "success";
       console.log("call with ", args.title, args.text);
-      const newTwitt = { id: String(nextIdForTwitts++), title: args.title, text: args.text, votesCount: 0 };
-      twitts.push(newTwitt);
-      console.log("global list : ", twitts);
+      
+      // twitts.push(newTwitt);
+      // console.log("global list : ", (await Twitts.find({}).toArray()).map(prepare));
+      // console.log("global list : ", twitts);
       pubsub.publish('twittAdded', { twittAdded: newTwitt });
       return "success";
     },
-    voteForTwitt: (root, args) => {
+    voteForTwitt: async (root, args) => {
       console.log("vote for twitt ", args.id);
-      twitts.forEach((currentTwitt) => {
-        if (currentTwitt.id == args.id) {
+      const twittToIncrement = prepare(await Twitts.findOne({_id: ObjectId(args.id)}));
+      
+      twittToIncrement.votesCount++;
+      let newCount = twittToIncrement.votesCount;
+      console.log("new count", newCount);
+      Twitts.updateOne(
+        {_id: ObjectId(args.id) }, //find criteria
+        // this row contains fix with $set oper
+        { $set : { votesCount: newCount}});
+
+        pubsub.publish('votesCountChanged', { votesCountChanged: twittToIncrement });
+      // twitts.forEach((currentTwitt) => {
+      //   if (currentTwitt.id == args.id) {
           
-          currentTwitt.votesCount++;
-          console.log("current twitt votes: ", twitts);
-          pubsub.publish('votesCountChanged', { votesCountChanged: currentTwitt });
-        }
-      });
+      //     currentTwitt.votesCount++;
+      //     console.log("current twitt votes: ", twitts);
+          
+      //   }
+      // });
       
       
       return "success";
