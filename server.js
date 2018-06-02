@@ -26,7 +26,7 @@ server.use('/graphql', bodyParser.json(), graphqlExpress({
 // deploy to heroku : put wss instead of ws
 server.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
-  subscriptionsEndpoint: `wss://localhost/subscriptions`
+  subscriptionsEndpoint: `wss://thibaut-server.herokuapp.com/subscriptions`
 }));
 
 // We wrap the express server so that we can attach the WebSocket for subscriptions
