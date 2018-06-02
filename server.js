@@ -13,7 +13,8 @@ import { execute, subscribe } from 'graphql';
 import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 
-const PORT = 4000;
+// const PORT = 4000;
+const PORT = process.env.PORT;
 const server = express();
 
 // server.use('*', cors({ origin: 'https://thibaut-client.herokuapp.com/' }));
@@ -26,7 +27,7 @@ server.use('/graphql', bodyParser.json(), graphqlExpress({
 // deploy to heroku : put wss instead of ws
 server.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
-  subscriptionsEndpoint: `wss://thibaut-server.herokuapp.com/subscriptions`
+  subscriptionsEndpoint: `wss://localhost/subscriptions`
 }));
 
 // We wrap the express server so that we can attach the WebSocket for subscriptions
