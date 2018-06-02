@@ -22,22 +22,33 @@ type Message {
   text: String
 }
 
+type Twitt {
+  id: ID!
+  title: String
+  text: String
+  votesCount: Int
+}
+
 # This type specifies the entry points into our API
 type Query {
   channels: [Channel]    # "[]" means this is a list of channels
   channel(id: ID!): Channel
+  twitts: [Twitt]
 }
 
 # The mutation root type, used to define all mutations
 type Mutation {
   addChannel(name: String!): Channel
   addMessage(message: MessageInput!): Message
-  addTwitt(message: String!): String
+  addTwitt(title: String!, text: String!): String
+  voteForTwitt(id: ID!): String
 }
 
 # The subscription root type, specifying what we can subscribe to
 type Subscription {
   messageAdded(channelId: ID!): Message
+  twittAdded(s: String): Twitt
+  votesCountChanged(s: String): Twitt
 }
 `;
 

@@ -26,6 +26,9 @@ let nextId = 3;
 let nextMessageId = 5;
 
 const pubsub = new PubSub();
+const twitts = [{id: 0, title: "titre exemple", text:"contenu du twitt", votesCount: 2},
+{id: 1, title: "nouveau titre", text:"avec un contenu plus long long long long long long long long long", votesCount: 2}];
+let nextIdForTwitts = 2;
 
 export const resolvers = {
   Query: {
@@ -34,6 +37,10 @@ export const resolvers = {
     },
     channel: (root, { id }) => {
       return channels.find(channel => channel.id === id);
+    },
+    twitts: () => {
+      console.log("query get list");
+      return twitts;
     },
   },
   Mutation: {
@@ -55,7 +62,25 @@ export const resolvers = {
       return newMessage;
     },
     addTwitt: (root, args) => {
-      console.log("call with ", args.message);
+      console.log("call with ", args.title, args.text);
+      const newTwitt = { id: String(nextIdForTwitts++), title: args.title, text: args.text, votesCount: 0 };
+      twitts.push(newTwitt);
+      console.log("global list : ", twitts);
+      pubsub.publish('twittAdded', { twittAdded: newTwitt });
+      return "success";
+    },
+    voteForTwitt: (root, args) => {
+      console.log("vote for twitt ", args.id);
+      twitts.forEach((currentTwitt) => {
+        if (currentTwitt.id == args.id) {
+          
+          currentTwitt.votesCount++;
+          console.log("current twitt votes: ", twitts);
+          pubsub.publish('votesCountChanged', { votesCountChanged: currentTwitt });
+        }
+      });
+      
+      
       return "success";
     },
   },
@@ -65,6 +90,16 @@ export const resolvers = {
         // The `messageAdded` channel includes events for all channels, so we filter to only
         // pass through events for the channel specified in the query
         return payload.channelId === variables.channelId;
+      }),
+    },
+    twittAdded: {
+      subscribe: withFilter(() => pubsub.asyncIterator('twittAdded'), (payload, variables) => {
+        return true;
+      }),
+    },
+    votesCountChanged: {
+      subscribe: withFilter(() => pubsub.asyncIterator('votesCountChanged'), (payload, variables) => {
+        return true;
       }),
     }
   },
