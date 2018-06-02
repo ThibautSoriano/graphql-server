@@ -27,7 +27,7 @@ let nextMessageId = 5;
 
 const pubsub = new PubSub();
 const twitts = [{id: 0, title: "titre exemple", text:"contenu du twitt", votesCount: 2},
-{id: 1, title: "nouveau titre", text:"avec un contenu plus long long long long long long long long long", votesCount: 2}];
+{id: 1, title: "lentilles", text:"se vendent à l'unité", votesCount: 1}];
 let nextIdForTwitts = 2;
 
 export const resolvers = {

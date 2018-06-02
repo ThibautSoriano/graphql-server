@@ -24,7 +24,7 @@ server.use('/graphql', bodyParser.json(), graphqlExpress({
   schema
 }));
 
-// deploy to heroku : put wss instead of ws
+// deploy to heroku : put wss instead of ws and remove :4000 for the port
 server.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
   subscriptionsEndpoint: `wss://localhost/subscriptions`
