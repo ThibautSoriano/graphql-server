@@ -25,8 +25,8 @@ import {loadDb} from './src/resolvers';
 
 loadDb();
 
-    // const PORT = 4000;
-  const PORT = process.env.PORT;
+    const PORT = 4000;
+  // const PORT = process.env.PORT;
   const server = express();
 
   // server.use('*', cors({ origin: 'https://thibaut-client.herokuapp.com/' }));
@@ -39,7 +39,7 @@ loadDb();
   // deploy to heroku : put wss instead of ws and remove :4000 for the port
   server.use('/graphiql', graphiqlExpress({
     endpointURL: '/graphql',
-    subscriptionsEndpoint: `wss://localhost/subscriptions`
+    subscriptionsEndpoint: `ws://localhost:4000/subscriptions`
   }));
 
   // We wrap the express server so that we can attach the WebSocket for subscriptions

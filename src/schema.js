@@ -6,20 +6,24 @@ import {
 import { resolvers } from './resolvers';
 
 const typeDefs = `
-type Channel {
-  id: ID!                # "!" denotes a required field
+type User {
+  _id: String!
   name: String
-  messages: [Message]!
+  token: String
+  sessions: [String]
 }
 
-input MessageInput{
-  channelId: ID!
-  text: String
+type UserVote {
+  user_id: String!
+  votesLeft: Int
 }
 
-type Message {
-  id: ID!
-  text: String
+type Session {
+  _id: String!
+  name: String
+  twitts: [Twitt]
+  maxVotesAllowed: Int
+  usersVotes: [UserVote]
 }
 
 type Twitt {
@@ -27,28 +31,34 @@ type Twitt {
   title: String
   text: String
   votesCount: Int
+  postedBy: String
 }
 
+type SessionWithVotes {
+  session: Session
+  votesLeft: Int
+}
 # This type specifies the entry points into our API
 type Query {
-  channels: [Channel]    # "[]" means this is a list of channels
-  channel(id: ID!): Channel
-  twitts: [Twitt]
+  sessions: [Session]
+  sessionById(sessionId: String!, userToken: String!): SessionWithVotes
+  meurguez(zhengqin: String): String
 }
 
 # The mutation root type, used to define all mutations
 type Mutation {
-  addChannel(name: String!): Channel
-  addMessage(message: MessageInput!): Message
-  addTwitt(title: String!, text: String!): String
+  addSession(name: String): String
+  addTwitt(sessionId: String!, title: String!, text: String!, token: String!): String
   voteForTwitt(id: String!): String
+  createUser(name: String): User
+  updateUserName(newName: String!, token: String!): String
 }
 
 # The subscription root type, specifying what we can subscribe to
 type Subscription {
-  messageAdded(channelId: ID!): Message
-  twittAdded(s: String): Twitt
+  twittAdded(sessionId: String!): Twitt
   votesCountChanged(s: String): Twitt
+  sessionAdded(s: String): Session
 }
 `;
 
